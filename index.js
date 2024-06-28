@@ -1,0 +1,50 @@
+var express = require('express');
+var app = express();
+
+var cors = require('cors');
+app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
+
+//to access public files
+app.use(express.static('public'));
+
+// Base Route
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
+});
+
+
+// your first API endpoint... 
+app.get("/api/hello", function (req, res) {
+  res.json({greeting: 'hello API'});
+});
+
+app.get("/api/:input", function (req, res) {
+  const {input} = req.params;
+  let date
+
+  if(input > 10){
+     if(input.includes(" ")){
+      date = new Date.parse(input)
+     }else{
+      date = parseInt(input)
+     }
+  }
+  else{
+    date = input
+  }
+
+  const finalDate = new Date(date);
+
+  const timestamp ={
+    unix : finalDate.getTime(),
+    utc: finalDate.toUTCString()
+  }
+
+  res.status(200).json(timestamp);
+});
+
+
+
+app.listen(3000, function () {
+  console.log('Your app is listening on port ' + 3000);
+});
