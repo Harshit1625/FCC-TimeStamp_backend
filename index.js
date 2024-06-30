@@ -18,19 +18,19 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:input", function (req, res) {
-  const {input} = req.params;
+app.get("/api/:dateInput", function (req, res) {
+  const {dateInput} = req.params;
   let date
 
-  if(input > 10){
-     if(input.includes(" ")){
-      date = new Date.parse(input)
+  if(dateInput > 10){
+     if(dateInput.includes(" ")){
+      date = new Date.parse(dateInput)
      }else{
-      date = parseInt(input)
+      date = parseInt(dateInput)
      }
   }
   else{
-    date = input
+    date = dateInput
   }
 
   const finalDate = new Date(date);
@@ -40,11 +40,13 @@ app.get("/api/:input", function (req, res) {
     utc: finalDate.toUTCString()
   }
 
+  if(!finalDate.getTime()) return res.status(404).json({ error : "Invalid date"})
+
   res.status(200).json(timestamp);
 });
 
 
 
-app.listen(3000, function () {
-  console.log('Your app is listening on port ' + 3000);
+var listener = app.listen(3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
